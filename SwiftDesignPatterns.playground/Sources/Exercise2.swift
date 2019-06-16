@@ -1,6 +1,6 @@
 import Foundation
 
-class Person
+public class Person
 {
   var id: Int
   var name: String
@@ -15,7 +15,7 @@ class Person
 class PersonFactory
 {
   var id: Int = 0
-  func createPerson(name: String) -> Person
+  public func createPerson(name: String) -> Person
   {
     let person = Person(called: name, withId: id)
     id += 1
