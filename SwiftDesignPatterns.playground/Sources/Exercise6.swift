@@ -24,12 +24,12 @@ class Triangle : Shape
   }
 }
 
-class Square: Shape
+class Circle: Shape
 {
   override init(_ renderer: Renderer)
   {
     super.init(renderer)
-    name = "Square"
+    name = "Circle"
   }
 }
 
