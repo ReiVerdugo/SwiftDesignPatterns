@@ -7,6 +7,8 @@ import UIKit
 //print(point)
 //print (point2)
 
-let dragon = Dragon()
-dragon.age = 11
-print(dragon.fly())
+//let dragon = Dragon()
+//dragon.age = 11
+//print(dragon.fly())
+
+let square = MagicSquareGenerator().generate(3)
