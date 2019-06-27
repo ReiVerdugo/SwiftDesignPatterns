@@ -11,4 +11,8 @@ import UIKit
 //dragon.age = 11
 //print(dragon.fly())
 
-let square = MagicSquareGenerator().generate(3)
+//let square = MagicSquareGenerator().generate(3)
+
+let s = Sentence("alpha beta gamma")
+s[1].capitalize = true
+print(s)
