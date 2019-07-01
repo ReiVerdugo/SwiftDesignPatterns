@@ -13,6 +13,21 @@ import UIKit
 
 //let square = MagicSquareGenerator().generate(3)
 
-let s = Sentence("alpha beta gamma")
-s[1].capitalize = true
-print(s)
+//let s = Sentence("alpha beta gamma")
+//s[1].capitalize = true
+//print(s)
+
+let game = Game()
+let goblin = Goblin(game: game)
+game.creatures.append(goblin)
+
+let goblin2 = Goblin(game: game)
+game.creatures.append(goblin2)
+
+print(goblin.attack)
+print(goblin.defense)
+
+let goblin3 = GoblinKing(game: game)
+game.creatures.append(goblin3)
+print(goblin3.attack)
+print(goblin3.defense)
