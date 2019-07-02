@@ -1,29 +1,31 @@
 // CQS
 
+enum Stats {
+  case attack
+  case defense
+}
+
+class Query {
+  let stats: Stats
+  var result = 0
+  
+  init(stats: Stats) {
+    self.stats = stats
+  }
+}
+
 public class Creature
 {
   var name: String
-  private var _attack: Int
-  private var _defense: Int
-  private let game: Game
+  let _attack: Int
+  let _defense: Int
+  let game: Game
   
   public var attack: Int {
-    get {
-      var attackPoints = _attack
-      if game.containsGoblinKing()
-        && isGoblin()
-        && !isGoblinKing() {
-        attackPoints += 1
-      }
-      return attackPoints
-    }
+    return _attack
   }
   
   public var defense: Int {
-    if isGoblin() {
-      let numberOfGoblins = game.numberOfGoblinsInPlay()
-      return _defense + numberOfGoblins - 1 // Remove one from self
-    }
     return _defense
   }
   
@@ -34,40 +36,66 @@ public class Creature
     _defense = defense
   }
   
-  func isGoblin() -> Bool {
-    return name.contains("Goblin")
-  }
-  
-  func isGoblinKing() -> Bool {
-    return name == "Goblin King"
-  }
+  func query(_ query: Query,source: Creature, stat: Stats) {}
 }
 
 public class Goblin : Creature
 {
-  public init(game: Game)
-  {
-    super.init(game: game, name: "Goblin", attack: 1, defense: 1)
+  override public var attack: Int {
+    let query = Query(stats: .attack)
+    for creature in game.creatures {
+      creature.query(query, source: self, stat: .attack)
+    }
+    return query.result
   }
   
-  override init(game: Game, name: String, attack: Int, defense: Int) {
+  override public var defense: Int {
+    let query = Query(stats: .defense)
+    for creature in game.creatures {
+      creature.query(query, source: self, stat: .defense)
+    }
+    return query.result
+  }
+  
+  public convenience init(game: Game)
+  {
+    self.init(game: game, name: "Goblin", attack: 1, defense: 1)
+  }
+  
+  public override init(game: Game, name: String, attack: Int, defense: Int) {
     super.init(game: game, name: "Goblin", attack: attack, defense: defense)
   }
   
-  override func isGoblin() -> Bool {
-    return true
+  override func query(_ query: Query, source: Creature, stat: Stats) {
+    if source === self {
+      switch stat {
+      case .attack:
+        query.result += _attack
+      case .defense:
+        query.result += _defense
+      }
+    } else if let _ = source as? Goblin,
+      stat == .defense {
+      query.result += 1
+    }
   }
 }
 
 public class GoblinKing : Goblin
 {
-  public override init(game: Game)
+  public init(game: Game)
   {
     super.init(game: game, name: "Goblin King", attack: 3, defense: 3)
   }
   
-  override func isGoblinKing() -> Bool {
-    return true
+  override func query(_ query: Query, source: Creature, stat: Stats) {
+    if source !== self,
+      let _ = source as? Goblin,
+      stat == .attack {
+      query.result += 3
+    } else {
+      super.query(query, source: source, stat: stat)
+    }
   }
 }
 
@@ -76,18 +104,4 @@ public class Game
   public var creatures = [Creature]()
   
   public init(){}
-  
-  func containsGoblinKing() -> Bool {
-    return creatures.contains { $0.isGoblinKing() }
-  }
-  
-  func numberOfGoblinsInPlay() -> Int {
-    var numberOfGoblins = 0
-    for creature in creatures {
-      if creature.isGoblin() {
-        numberOfGoblins += 1
-      }
-    }
-    return numberOfGoblins
-  }
 }
