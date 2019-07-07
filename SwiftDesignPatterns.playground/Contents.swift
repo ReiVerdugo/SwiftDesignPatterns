@@ -17,17 +17,28 @@ import UIKit
 //s[1].capitalize = true
 //print(s)
 
-let game = Game()
-let goblin = Goblin(game: game)
-game.creatures.append(goblin)
+//let game = Game()
+//let goblin = Goblin(game: game)
+//game.creatures.append(goblin)
+//
+//let goblin2 = Goblin(game: game)
+//game.creatures.append(goblin2)
+//
+//print(goblin.attack)
+//print(goblin.defense)
+//
+//let goblin3 = GoblinKing(game: game)
+//game.creatures.append(goblin3)
+//print(goblin3.attack)
+//print(goblin3.defense)
 
-let goblin2 = Goblin(game: game)
-game.creatures.append(goblin2)
+let lexer = Lexer()
+let testStr = "3+2+8-a+abc+100"
+let result = lexer.lex(testStr)
+print(result)
 
-print(goblin.attack)
-print(goblin.defense)
+let variables = [Character("a"): 10]
+let parser = Parser(variables)
 
-let goblin3 = GoblinKing(game: game)
-game.creatures.append(goblin3)
-print(goblin3.attack)
-print(goblin3.defense)
+let result2 = parser.parse(result)
+print(result2.value)

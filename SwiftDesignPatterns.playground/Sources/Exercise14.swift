@@ -27,7 +27,13 @@ class ExpressionProcessor
   
   func calculate(_ expression: String) -> Int
   {
-    return 0
+    let lexer = Lexer()
+    let tokens = lexer.lex(expression)
+    
+    let parser = Parser(variables)
+    
+    let result = parser.parse(tokens)
+    return result.value
   }
 }
 
@@ -115,14 +121,14 @@ public protocol Element {
   var value: Int { get }
 }
 
-class Integer: Element {
+struct Integer: Element {
   var value: Int
   init(_ value: Int) {
     self.value = value
   }
 }
 
-class BinaryOperation: Element {
+struct BinaryOperation: Element {
   enum OpType {
     case addition
     case subtraction
@@ -142,10 +148,8 @@ class BinaryOperation: Element {
   var value: Int {
     switch opType {
     case .addition:
-      print("Adding \(left.value) + \(right.value)")
       return left.value + right.value
     case .subtraction:
-      print("Subtracting \(left.value) - \(right.value)")
       return left.value - right.value
     }
   }
@@ -158,9 +162,9 @@ public class Parser {
     self.variables = variables
   }
   public func parse(_ tokens: [Token]) -> Element {
-    let result = BinaryOperation()
+    var result = BinaryOperation()
     var haveLHS = false
-    
+    var haveOperator = false
     var i = 0
     while i < tokens.count {
       let token = tokens[i]
@@ -168,43 +172,36 @@ public class Parser {
       case .integer, .variable:
         let integer: Integer
         if token.tokenType == .variable {
-          if token.text.count == 1 {
-            let character = token.text[0]
-            let valueOfVariable = variables[character] ?? 0
-            integer = Integer(valueOfVariable)
-          } else {
-            integer = Integer(0)
+          guard token.text.count == 1,
+            let character = token.text.first,
+            let valueOfVariable = variables[character] else {
+              return Integer(0)
           }
+          integer = Integer(valueOfVariable)
         } else {
           integer = Integer(Int(token.text)!)
         }
         
         if !haveLHS {
-          print("Adding left element \(integer.value)")
           result.left = integer
           haveLHS = true
 
         } else {
-          if i + 1 == tokens.count {
-            print("Adding right element \(integer.value)")
-            result.right = integer
-            return result
-            
-          } else {
-            // Process subexpression
-            let subexpression = tokens[i..<tokens.count]
-            let element = parse(Array(subexpression))
-            print("Adding right element \(element.value)")
-            result.right = element
-            return result
-          }
-          
+          result.right = integer
         }
       case .plus:
+        if haveOperator {
+          result.left = result
+        }
         result.opType = .addition
+        haveOperator = true
         
       case .minus:
+        if haveOperator {
+          result.left = result
+        }
         result.opType = .subtraction
+        haveOperator = true
       }
       i += 1
     }
