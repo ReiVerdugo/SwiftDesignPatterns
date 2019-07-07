@@ -32,13 +32,21 @@ import UIKit
 //print(goblin3.attack)
 //print(goblin3.defense)
 
-let lexer = Lexer()
-let testStr = "3+2+8-a+abc+100"
-let result = lexer.lex(testStr)
-print(result)
+//let lexer = Lexer()
+//let testStr = "3+2+8-a+abc+100"
+//let result = lexer.lex(testStr)
+//print(result)
+//
+//let variables = [Character("a"): 10]
+//let parser = Parser(variables)
+//
+//let result2 = parser.parse(result)
+//print(result2.value)
 
-let variables = [Character("a"): 10]
-let parser = Parser(variables)
+let node = Node<Int>(2)
+let node2 = Node<Int>(3)
+let node3 = Node<Int>(1, node2, node)
 
-let result2 = parser.parse(result)
-print(result2.value)
+for value in node3.preOrder {
+  print(value)
+}
