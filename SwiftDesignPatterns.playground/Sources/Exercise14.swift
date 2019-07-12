@@ -37,7 +37,7 @@ class ExpressionProcessor
   }
 }
 
-public struct Token: CustomStringConvertible {
+public struct TokenValue: CustomStringConvertible {
   
   enum TokenType {
     case integer
@@ -62,16 +62,16 @@ public struct Token: CustomStringConvertible {
 public class Lexer {
   public init() {}
   
-  public func lex(_ input: String) -> [Token] {
-    var result: [Token] = []
+  public func lex(_ input: String) -> [TokenValue] {
+    var result: [TokenValue] = []
     
     var i = 0
     while i < input.count {
       switch input[i] {
       case "+":
-        result.append(Token(tokenType: .plus, text: "+"))
+        result.append(TokenValue(tokenType: .plus, text: "+"))
       case "-":
-        result.append(Token(tokenType: .minus, text: "-"))
+        result.append(TokenValue(tokenType: .minus, text: "-"))
       default:
         var s = String(input[i])
         // Found integer
@@ -83,13 +83,13 @@ public class Lexer {
               i += 1
               
             } else {
-              result.append(Token(tokenType: .integer, text: s))
+              result.append(TokenValue(tokenType: .integer, text: s))
               reachedEnd = true
               break
             }
           }
           if !reachedEnd {
-            result.append(Token(tokenType: .integer, text: s))
+            result.append(TokenValue(tokenType: .integer, text: s))
           }
         // Found variable
         } else if s.isLetter {
@@ -100,13 +100,13 @@ public class Lexer {
               i += 1
               
             } else {
-              result.append(Token(tokenType: .variable, text: s))
+              result.append(TokenValue(tokenType: .variable, text: s))
               reachedEnd = true
               break
             }
           }
           if !reachedEnd {
-             result.append(Token(tokenType: .variable, text: s))
+             result.append(TokenValue(tokenType: .variable, text: s))
           }
         }
       }
@@ -161,7 +161,7 @@ public class Parser {
   public init (_ variables: [Character: Int]) {
     self.variables = variables
   }
-  public func parse(_ tokens: [Token]) -> Element {
+  public func parse(_ tokens: [TokenValue]) -> Element {
     var result = BinaryOperation()
     var haveLHS = false
     var haveOperator = false
