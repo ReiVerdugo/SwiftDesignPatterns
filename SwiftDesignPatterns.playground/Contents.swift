@@ -43,10 +43,17 @@ import UIKit
 //let result2 = parser.parse(result)
 //print(result2.value)
 
-let node = Node<Int>(2)
-let node2 = Node<Int>(3)
-let node3 = Node<Int>(1, node2, node)
+//let node = Node<Int>(2)
+//let node2 = Node<Int>(3)
+//let node3 = Node<Int>(1, node2, node)
+//
+//for value in node3.preOrder {
+//  print(value)
+//}
 
-for value in node3.preOrder {
-  print(value)
-}
+let lock = CombinationLock([0,1,2,3])
+lock.enterDigit(0)
+lock.enterDigit(1)
+lock.enterDigit(3)
+lock.enterDigit(3)
+

@@ -11,7 +11,7 @@ enum LogError : Error
   case logSpaceExceeded
 }
 
-class Account
+class OperationsAccount
 {
   private var log: Log
   
